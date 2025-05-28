@@ -70,6 +70,20 @@ class User extends Authenticatable
     }
 
     public function transactions(): HasMany {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class, 'user_id');
+    }
+
+    public function getActiveSubscription(): ?Transaction {
+        return $this->transactions()
+            ->where('is_paid', true)
+            ->where('ended_at', '>=', now())
+            ->first();
+    }
+
+    public function hasActiveSubscription(): bool {
+        return $this->transactions()
+            ->where('is_paid', true)
+            ->where('ended_at', '>=', now())
+            ->exists();
     }
 }

@@ -45,4 +45,10 @@ class Course extends Model
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function getContentCountAttribute(){
+        return $this->sections->sum(function ($section) {
+            return $section->sections->count();
+        });
+    }
 }
