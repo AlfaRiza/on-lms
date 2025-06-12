@@ -4,14 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
-use App\Models\Role;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
 {
@@ -23,7 +24,14 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->label('Role Name')
+                    ->placeholder('Enter role name')
+                    ->maxLength(255)
+                    ->required()
+                    ->autofocus()
+                    ->unique(Role::class, 'name', ignoreRecord: true)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -33,9 +41,9 @@ class RoleResource extends Resource
             ->columns([
                 //
             ])
-            ->filters([
-                Tables\Filters\TrashedFilter::make(),
-            ])
+            // ->filters([
+            //     Tables\Filters\TrashedFilter::make(),
+            // ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -43,15 +43,13 @@ class UserResource extends Resource
                     ->required()
                     ->unique(User::class, 'email', ignoreRecord: true)
                     ->columnSpanFull(),
-                TextInput::make('password')
+                    TextInput::make('password')
                     ->label('Password')
-                    ->placeholder('Enter password')
                     ->password()
-                    ->minLength(8)
-                    ->maxLength(255)
                     ->required()
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                    ->columnSpanFull(),
+                    ->visibleOn('create') // hanya saat create
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
                 Select::make('occupation')
                     ->label('Occupation')
                     ->options([
@@ -90,6 +88,7 @@ class UserResource extends Resource
                     ->disk('public')
                     // ->directory('user-photos')
                     ->defaultImageUrl('/images/default-user.png')
+                    ->circular()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('name')
