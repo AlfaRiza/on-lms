@@ -43,13 +43,13 @@ class UserResource extends Resource
                     ->required()
                     ->unique(User::class, 'email', ignoreRecord: true)
                     ->columnSpanFull(),
-                    TextInput::make('password')
-                    ->label('Password')
-                    ->password()
+                TextInput::make('password')
+                    ->helperText('Minimum 8 characters')
+                    ->password() // This makes it a password field
                     ->required()
-                    ->visibleOn('create') // hanya saat create
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
+                    ->minLength(8) // Minimum length for the password
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Select::make('occupation')
                     ->label('Occupation')
                     ->options([
